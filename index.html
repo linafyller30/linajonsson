@@ -55,7 +55,7 @@
             transition: background-color 0.1s;
         }
 
-        /* Stress-blinkningar */
+        /* Stress-blinkningar vid shotrunda */
         .stress-flash-active {
             animation: intense-flash-bg 0.1s infinite;
         }
@@ -112,7 +112,7 @@
             100% { transform: scale(1); background-color: #fbbf24; }
         }
 
-        /* Bild-styling */
+        /* Bild-styling för Hear me out cake */
         .image-grid {
             display: grid;
             gap: 12px;
@@ -139,7 +139,7 @@
 </head>
 <body class="p-4 md:p-8 min-h-screen">
 
-    <!-- Startskärm -->
+    <!-- Startskärm: Ange lagnamn -->
     <div id="setup-screen" class="p-6">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-double border-indigo-100">
             <h2 class="text-4xl font-bold mb-6 italic">Vilka tävlar?</h2>
@@ -205,26 +205,35 @@
             </div>
 
             <div id="modal-footer" class="flex flex-col gap-4 relative z-10 pb-4">
-                <div id="pre-shot-controls" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button id="team-answered-btn" class="bg-yellow-400 text-black px-6 py-6 rounded-2xl text-2xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600">
+                <!-- Initiala kontroller vid öppning -->
+                <div id="pre-shot-controls" class="flex justify-center">
+                    <button id="team-answered-btn" class="bg-yellow-400 text-black px-12 py-6 rounded-2xl text-3xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600">
                         LAG SVARAR! 🛑
-                    </button>
-                    <button id="fail-trigger-btn" class="bg-red-600 text-white px-6 py-6 rounded-2xl text-2xl hover:bg-red-700 transition-all font-black border-b-8 border-red-800">
-                        FEL! (SHOTRUNDA) 🥃
                     </button>
                 </div>
 
+                <!-- Knapp för att stoppa pågående shotrunda -->
                 <button id="shot-taken-btn" class="hidden stop-shot-btn bg-yellow-400 text-black px-10 py-8 rounded-2xl text-4xl font-black border-b-8 border-orange-600 mb-2">
                     DE TOG EN SHOT! 🥃
                 </button>
 
-                <button id="show-answer-btn" class="hidden bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl hover:bg-indigo-700 transition-all font-bold">Visa svar</button>
-                
-                <div id="action-buttons" class="hidden grid grid-cols-2 gap-4">
-                    <button onclick="showTeamSelection()" class="bg-green-500 text-white px-6 py-4 rounded-2xl hover:bg-green-600 font-bold text-xl">Rätt (+ poäng)</button>
-                    <button onclick="closeModal(null)" class="bg-red-500 text-white px-6 py-4 rounded-2xl hover:bg-red-600 font-bold text-xl">Ingen fick rätt</button>
+                <!-- Kontroller som dyker upp när någon har tryckt "LAG SVARAR" eller "DE TOG EN SHOT" -->
+                <div id="action-buttons" class="hidden flex flex-col gap-4">
+                    <button id="show-answer-btn" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl hover:bg-indigo-700 transition-all font-bold">Visa svar</button>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="showTeamSelection()" class="bg-green-500 text-white px-6 py-4 rounded-2xl hover:bg-green-600 font-bold text-xl border-b-4 border-green-700">Rätt (+ poäng)</button>
+                        
+                        <!-- DENNA KNAPP SYNS NU BARA HÄR -->
+                        <button id="fail-trigger-btn" class="bg-red-600 text-white px-6 py-4 rounded-2xl hover:bg-red-700 transition-all font-black border-b-4 border-red-800 text-xl">
+                            FEL! (SHOTRUNDA) 🥃
+                        </button>
+
+                        <button onclick="closeModal(null)" class="bg-gray-500 text-white px-6 py-4 rounded-2xl hover:bg-gray-600 font-bold text-xl border-b-4 border-gray-700">Ingen fick rätt</button>
+                    </div>
                 </div>
 
+                <!-- Val av lag vid rätt svar -->
                 <div id="team-selector" class="hidden flex flex-col gap-4">
                     <p class="text-xl font-bold text-gray-600">Vem vann poängen?</p>
                     <div id="team-selection-grid" class="grid grid-cols-2 gap-3"></div>
@@ -339,10 +348,11 @@
                 imgContainer.classList.add('hidden');
             }
 
+            // Återställ UI
             document.getElementById('answer-text').classList.add('hidden');
             document.getElementById('action-buttons').classList.add('hidden');
             document.getElementById('team-selector').classList.add('hidden');
-            document.getElementById('show-answer-btn').classList.add('hidden');
+            document.getElementById('show-answer-btn').classList.remove('hidden');
             
             document.getElementById('pre-shot-controls').classList.remove('hidden');
             document.getElementById('shot-taken-btn').classList.add('hidden');
@@ -388,20 +398,22 @@
             document.getElementById('timer-text').innerText = "SVEP!";
             
             document.getElementById('pre-shot-controls').classList.add('hidden');
+            document.getElementById('action-buttons').classList.add('hidden'); // Dölj vanliga knappar
             document.getElementById('shot-taken-btn').classList.remove('hidden');
         }
 
+        // Koppla "FEL!"-knappen till att trigga shotrundan
         document.getElementById('fail-trigger-btn').onclick = triggerShotRule;
 
         function stopEverything() {
             clearInterval(timerInterval);
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('modal-card').classList.remove('modal-pulse', 'card-flash-active');
+            document.getElementById('shot-notice').classList.add('hidden');
             
             document.getElementById('pre-shot-controls').classList.add('hidden');
             document.getElementById('shot-taken-btn').classList.add('hidden');
             
-            document.getElementById('show-answer-btn').classList.remove('hidden');
             document.getElementById('action-buttons').classList.remove('hidden');
         }
 
