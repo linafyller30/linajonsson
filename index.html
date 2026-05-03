@@ -112,7 +112,7 @@
             100% { transform: scale(1); background-color: #fbbf24; }
         }
 
-        /* Bild-styling för att visa hela bilden i ett rutnät */
+        /* Bild-styling */
         .image-grid {
             display: grid;
             gap: 12px;
@@ -124,14 +124,13 @@
         .question-image {
             width: 100%;
             height: 180px;
-            object-fit: contain; /* Visar hela bilden utan beskärning */
+            object-fit: contain;
             background-color: #f9fafb;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             border: 2px solid #e5e7eb;
         }
 
-        /* Rutnät baserat på antal bilder */
         .grid-1 { grid-template-columns: minmax(200px, 450px); }
         .grid-2 { grid-template-columns: repeat(2, 1fr); }
         .grid-3 { grid-template-columns: repeat(3, 1fr); }
@@ -159,7 +158,7 @@
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div class="text-center lg:text-left">
                 <h1 class="text-5xl font-bold tracking-tight uppercase">30-Års Jeopardy</h1>
-                <p class="italic text-xl text-indigo-800">Shot-runda vid 0 sekunder!</p>
+                <p class="italic text-xl text-indigo-800">Shot-runda vid 0 sekunder eller FEL svar!</p>
             </div>
             <div id="team-display" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-auto"></div>
         </div>
@@ -195,10 +194,7 @@
                 <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Den som sveper först får svara!</p>
             </div>
 
-            <!-- Behållare för bilder -->
-            <div id="image-container" class="hidden image-grid">
-                <!-- Bilder injiceras här -->
-            </div>
+            <div id="image-container" class="hidden image-grid"></div>
 
             <div id="question-text" class="text-2xl md:text-4xl mb-8 min-h-[50px] flex items-center justify-center font-bold leading-tight relative z-10">
                 Laddar fråga...
@@ -209,9 +205,14 @@
             </div>
 
             <div id="modal-footer" class="flex flex-col gap-4 relative z-10 pb-4">
-                <button id="team-answered-btn" class="bg-yellow-400 text-black px-10 py-6 rounded-2xl text-3xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600 mb-2">
-                    LAG SVARAR! 🛑
-                </button>
+                <div id="pre-shot-controls" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button id="team-answered-btn" class="bg-yellow-400 text-black px-6 py-6 rounded-2xl text-2xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600">
+                        LAG SVARAR! 🛑
+                    </button>
+                    <button id="fail-trigger-btn" class="bg-red-600 text-white px-6 py-6 rounded-2xl text-2xl hover:bg-red-700 transition-all font-black border-b-8 border-red-800">
+                        FEL! (SHOTRUNDA) 🥃
+                    </button>
+                </div>
 
                 <button id="shot-taken-btn" class="hidden stop-shot-btn bg-yellow-400 text-black px-10 py-8 rounded-2xl text-4xl font-black border-b-8 border-orange-600 mb-2">
                     DE TOG EN SHOT! 🥃
@@ -235,7 +236,6 @@
 
     <script>
         const cakeQuestionText = "Vem är linas hear me out cake av dessa?";
-
         const gameData = {
             music: [
                 { v: 500, q: "Denna grupp toppade listorna året födelsedagsbarnet föddes.", a: "Spice Girls", imgs: ["https://upload.wikimedia.org/wikipedia/en/0/01/SpiceGirlsSpiceAlbumcover.png"] },
@@ -323,7 +323,6 @@
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('answer-text').innerText = data.a;
             
-            // Hantera bilder (rutnät)
             const imgContainer = document.getElementById('image-container');
             imgContainer.innerHTML = '';
             if (data.imgs && data.imgs.length > 0) {
@@ -332,10 +331,7 @@
                     const img = document.createElement('img');
                     img.src = src;
                     img.className = 'question-image';
-                    img.onerror = () => { 
-                        img.alt = "Bild saknas: " + src; 
-                        img.classList.add('flex', 'items-center', 'justify-center', 'text-xs', 'bg-gray-100');
-                    }; 
+                    img.onerror = () => { img.alt = "Bild: " + src; img.classList.add('bg-gray-100','p-2'); }; 
                     imgContainer.appendChild(img);
                 });
                 imgContainer.classList.remove('hidden');
@@ -347,8 +343,10 @@
             document.getElementById('action-buttons').classList.add('hidden');
             document.getElementById('team-selector').classList.add('hidden');
             document.getElementById('show-answer-btn').classList.add('hidden');
-            document.getElementById('team-answered-btn').classList.remove('hidden');
+            
+            document.getElementById('pre-shot-controls').classList.remove('hidden');
             document.getElementById('shot-taken-btn').classList.add('hidden');
+            
             document.getElementById('modal-card').classList.remove('modal-pulse', 'card-flash-active');
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('shot-notice').classList.add('hidden');
@@ -383,26 +381,33 @@
         }
 
         function triggerShotRule() {
+            clearInterval(timerInterval);
             document.getElementById('modal-card').classList.add('modal-pulse', 'card-flash-active');
             document.getElementById('modal').classList.add('stress-flash-active');
             document.getElementById('shot-notice').classList.remove('hidden');
             document.getElementById('timer-text').innerText = "SVEP!";
-            document.getElementById('team-answered-btn').classList.add('hidden');
+            
+            document.getElementById('pre-shot-controls').classList.add('hidden');
             document.getElementById('shot-taken-btn').classList.remove('hidden');
         }
+
+        document.getElementById('fail-trigger-btn').onclick = triggerShotRule;
 
         function stopEverything() {
             clearInterval(timerInterval);
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('modal-card').classList.remove('modal-pulse', 'card-flash-active');
-            document.getElementById('team-answered-btn').classList.add('hidden');
+            
+            document.getElementById('pre-shot-controls').classList.add('hidden');
             document.getElementById('shot-taken-btn').classList.add('hidden');
+            
             document.getElementById('show-answer-btn').classList.remove('hidden');
             document.getElementById('action-buttons').classList.remove('hidden');
         }
 
         document.getElementById('team-answered-btn').onclick = stopEverything;
         document.getElementById('shot-taken-btn').onclick = stopEverything;
+
         document.getElementById('show-answer-btn').onclick = () => {
             document.getElementById('answer-text').classList.remove('hidden');
             document.getElementById('show-answer-btn').classList.add('hidden');
