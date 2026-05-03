@@ -55,6 +55,7 @@
             transition: background-color 0.1s;
         }
 
+        /* Stress-blinkningar */
         .stress-flash-active {
             animation: intense-flash-bg 0.1s infinite;
         }
@@ -111,18 +112,33 @@
             100% { transform: scale(1); background-color: #fbbf24; }
         }
 
+        /* Bild-styling */
+        .image-grid {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
         .question-image {
-            max-width: 100%;
-            max-height: 250px;
-            object-fit: contain;
-            margin: 0 auto 20px auto;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 3px solid white;
         }
+
+        /* Anpassa rutnätet baserat på antal bilder */
+        .grid-1 { grid-template-columns: minmax(200px, 400px); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(2, 1fr); }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
 
+    <!-- Startskärm -->
     <div id="setup-screen" class="p-6">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-double border-indigo-100">
             <h2 class="text-4xl font-bold mb-6 italic">Vilka tävlar?</h2>
@@ -136,6 +152,7 @@
         </div>
     </div>
 
+    <!-- Header -->
     <div class="max-w-7xl mx-auto mb-8">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div class="text-center lg:text-left">
@@ -146,16 +163,18 @@
         </div>
     </div>
 
+    <!-- Spelplan -->
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-3 md:gap-4">
         <div class="category-music p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Musik</div>
         <div class="category-childhood p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Barndom</div>
-        <div class="category-cake p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase text-shadow">Hear me out cake</div>
-        <div class="category-random p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Random</div>
+        <div class="category-cake p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Hear me out cake</div>
+        <div class="category-random p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase text-shadow">Random</div>
         <div id="game-board-contents" class="contents"></div>
     </div>
 
+    <!-- Frågemodal -->
     <div id="modal" class="modal-overlay">
-        <div id="modal-card" class="bg-white p-8 md:p-12 rounded-3xl max-w-3xl w-full text-center relative card-shadow border-8 border-double border-indigo-50 transition-all overflow-y-auto max-h-[90vh]">
+        <div id="modal-card" class="bg-white p-8 md:p-12 rounded-3xl max-w-4xl w-full text-center relative card-shadow border-8 border-double border-indigo-50 transition-all overflow-y-auto max-h-[90vh]">
             
             <div id="timer-container" class="mb-6">
                 <div class="flex justify-center items-center mb-2">
@@ -174,12 +193,12 @@
                 <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Den som sveper först får svara!</p>
             </div>
 
-            <!-- Behållare för bild -->
-            <div id="image-container" class="hidden">
-                <img id="modal-image" src="" alt="Frågebild" class="question-image">
+            <!-- Behållare för bilder -->
+            <div id="image-container" class="hidden image-grid">
+                <!-- Bilder injiceras här av JS -->
             </div>
 
-            <div id="question-text" class="text-3xl md:text-5xl mb-12 min-h-[50px] flex items-center justify-center font-bold leading-tight relative z-10">
+            <div id="question-text" class="text-3xl md:text-4xl mb-12 min-h-[50px] flex items-center justify-center font-bold leading-tight relative z-10">
                 Laddar fråga...
             </div>
             
@@ -215,25 +234,25 @@
     <script>
         const gameData = {
             music: [
-                { v: 500, q: "Vems albumomslag ser ut såhär?", a: "Spice Girls (Spice, 1996)", img: "https://upload.wikimedia.org/wikipedia/en/0/01/SpiceGirlsSpiceAlbumcover.png" },
-                { v: 400, q: "Denna Britney Spears-låt släpptes 1998 och blev en omedelbar klassiker.", a: "...Baby One More Time" },
-                { v: 300, q: "Vilket boyband hade de mest dedikerade fansen runt millennieskiftet?", a: "Backstreet Boys" },
+                { v: 500, q: "Denna grupp toppade listorna året födelsedagsbarnet föddes.", a: "Spice Girls", imgs: ["https://upload.wikimedia.org/wikipedia/en/0/01/SpiceGirlsSpiceAlbumcover.png"] },
+                { v: 400, q: "Denna Britney Spears-låt släpptes 1998.", a: "...Baby One More Time" },
+                { v: 300, q: "Vilket boyband hade de mest dedikerade fansen?", a: "Backstreet Boys" },
                 { v: 200, q: "Detta bärbara sätt att lyssna på musik ersatte kassetten.", a: "Discman" },
                 { v: 100, q: "Vilken färg hade de populära 'HitClips'-spelarna?", a: "Olika neonfärger" }
             ],
             childhood: [
-                { v: 500, q: "Vem är det här?", a: "Björne", img: "https://image.spreadshirtmedia.net/image-server/v1/products/T210A2PA4301PT17X46Y38D1016834185W2498H2998/views/1,width=378,height=378,appearanceId=2,backgroundColor=F2F2F2/bjoerne-och-snigel-maen-premium-t-shirt.jpg" },
+                { v: 500, q: "I detta program bodde en björn i ett hus fullt av roliga saker.", a: "Björnes Magasin", imgs: ["https://image.spreadshirtmedia.net/image-server/v1/products/T210A2PA4301PT17X46Y38D1016834185W2498H2998/views/1,width=378,height=378,appearanceId=2,backgroundColor=F2F2F2/bjoerne-och-snigel-maen-premium-t-shirt.jpg"] },
                 { v: 400, q: "Vilken smak hade de klassiska 'Sura Patronerna'?", a: "Citron" },
                 { v: 300, q: "Dessa små plastfigurer med färgglatt hår satt på pennorna.", a: "Lyckotroll" },
                 { v: 200, q: "Vilket digitalt husdjur krävde mat dygnet runt?", a: "Tamagotchi" },
                 { v: 100, q: "Vad hette den blå bollen som fastnade på allt?", a: "Klibb-boll" }
             ],
             cake: [
-                { v: 500, q: "Vem är den mest oväntade kändisen hon tycker är snygg?", a: "Danny DeVito" },
-                { v: 400, q: "Vilken tecknad Disney-skurk har potential enligt henne?", a: "Hades" },
-                { v: 300, q: "Vilken matkombination är hennes märkligaste favorit?", a: "Chips och kaviar" },
-                { v: 200, q: "Vilket yrke har personerna hon oftast faller för?", a: "Bartenders" },
-                { v: 100, q: "Om hon fick dejta en historisk person, vem?", a: "Elvis Presley" }
+                { v: 500, q: "Vilka är dessa fyra oväntade 'Hear me out'-kandidater?", a: "Svaret på alla 4", imgs: ["500p_a.jpg", "500p_b.jpg", "500p_c.jpg", "500p_d.jpg"] },
+                { v: 400, q: "Vilka tre karaktärer döljer sig här?", a: "Svaret på alla 3", imgs: ["400p_a.jpg", "400p_b.jpg", "400p_c.jpg"] },
+                { v: 300, q: "Tre klassiska kändisar hon 'hört ut'. Vilka?", a: "Svaret på alla 3", imgs: ["300p_a.jpg", "300p_b.jpg", "300p_c.jpg"] },
+                { v: 200, q: "Dessa tre hjältar har hon en svag punkt för.", a: "Svaret på alla 3", imgs: ["200p_a.jpg", "200p_b.jpg", "200p_c.jpg"] },
+                { v: 100, q: "Vilka är dessa två?", a: "Svaret på alla 2", imgs: ["100p_a.jpg", "100p_b.jpg"] }
             ],
             random: [
                 { v: 500, q: "Hur många koppar kaffe krävs en måndag?", a: "Minst 3 koppar" },
@@ -300,11 +319,18 @@
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('answer-text').innerText = data.a;
             
-            // Hantera bild
+            // Hantera bilder (rutnät)
             const imgContainer = document.getElementById('image-container');
-            const modalImg = document.getElementById('modal-image');
-            if (data.img) {
-                modalImg.src = data.img;
+            imgContainer.innerHTML = '';
+            if (data.imgs && data.imgs.length > 0) {
+                imgContainer.className = `image-grid grid-${data.imgs.length}`;
+                data.imgs.forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = 'question-image';
+                    img.onerror = () => { img.style.display = 'none'; }; // Dölj om bilden saknas
+                    imgContainer.appendChild(img);
+                });
                 imgContainer.classList.remove('hidden');
             } else {
                 imgContainer.classList.add('hidden');
@@ -314,10 +340,8 @@
             document.getElementById('action-buttons').classList.add('hidden');
             document.getElementById('team-selector').classList.add('hidden');
             document.getElementById('show-answer-btn').classList.add('hidden');
-            
             document.getElementById('team-answered-btn').classList.remove('hidden');
             document.getElementById('shot-taken-btn').classList.add('hidden');
-            
             document.getElementById('modal-card').classList.remove('modal-pulse', 'card-flash-active');
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('shot-notice').classList.add('hidden');
@@ -332,22 +356,18 @@
             timeLeft = 30;
             const bar = document.getElementById('timer-bar');
             const text = document.getElementById('timer-text');
-            
             bar.style.width = '100%';
             bar.className = 'bg-indigo-500 h-full w-full';
             text.innerText = "30s";
-
             timerInterval = setInterval(() => {
                 timeLeft--;
                 text.innerText = timeLeft + "s";
                 const percentage = (timeLeft / 30) * 100;
                 bar.style.width = percentage + "%";
-
                 if (timeLeft <= 10) {
                     bar.classList.replace('bg-indigo-500', 'bg-red-500');
                     text.classList.add('text-red-600');
                 }
-
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     triggerShotRule();
@@ -360,7 +380,6 @@
             document.getElementById('modal').classList.add('stress-flash-active');
             document.getElementById('shot-notice').classList.remove('hidden');
             document.getElementById('timer-text').innerText = "SVEP!";
-
             document.getElementById('team-answered-btn').classList.add('hidden');
             document.getElementById('shot-taken-btn').classList.remove('hidden');
         }
@@ -369,17 +388,14 @@
             clearInterval(timerInterval);
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('modal-card').classList.remove('modal-pulse', 'card-flash-active');
-            
             document.getElementById('team-answered-btn').classList.add('hidden');
             document.getElementById('shot-taken-btn').classList.add('hidden');
-            
             document.getElementById('show-answer-btn').classList.remove('hidden');
             document.getElementById('action-buttons').classList.remove('hidden');
         }
 
         document.getElementById('team-answered-btn').onclick = stopEverything;
         document.getElementById('shot-taken-btn').onclick = stopEverything;
-
         document.getElementById('show-answer-btn').onclick = () => {
             document.getElementById('answer-text').classList.remove('hidden');
             document.getElementById('show-answer-btn').classList.add('hidden');
