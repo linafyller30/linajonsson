@@ -158,7 +158,7 @@
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div class="text-center lg:text-left">
                 <h1 class="text-5xl font-bold tracking-tight uppercase">30-Års Jeopardy</h1>
-                <p class="italic text-xl text-indigo-800">Shot-runda vid 0 sekunder eller FEL svar!</p>
+                <p class="italic text-xl text-indigo-800">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
             </div>
             <div id="team-display" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-auto"></div>
         </div>
@@ -191,7 +191,7 @@
             
             <div id="shot-notice" class="hidden mb-6">
                 <p class="text-6xl md:text-8xl font-black shot-alert-anim text-red-600 leading-none">🔥🍶🔥 SHOT! 🔥🍶🔥</p>
-                <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Den som sveper först får svara!</p>
+                <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Svep först för att STJÄLA frågan!</p>
             </div>
 
             <div id="image-container" class="hidden image-grid"></div>
@@ -205,35 +205,35 @@
             </div>
 
             <div id="modal-footer" class="flex flex-col gap-4 relative z-10 pb-4">
-                <!-- Initiala kontroller vid öppning -->
+                <!-- Initiala kontroller -->
                 <div id="pre-shot-controls" class="flex justify-center">
                     <button id="team-answered-btn" class="bg-yellow-400 text-black px-12 py-6 rounded-2xl text-3xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600">
                         LAG SVARAR! 🛑
                     </button>
                 </div>
 
-                <!-- Knapp för att stoppa pågående shotrunda -->
+                <!-- Knapp för att stoppa stöld-rundan -->
                 <button id="shot-taken-btn" class="hidden stop-shot-btn bg-yellow-400 text-black px-10 py-8 rounded-2xl text-4xl font-black border-b-8 border-orange-600 mb-2">
-                    DE TOG EN SHOT! 🥃
+                    DE TOG SHOTTEN! 🥃
                 </button>
 
-                <!-- Kontroller som dyker upp när någon har tryckt "LAG SVARAR" eller "DE TOG EN SHOT" -->
+                <!-- Efter att någon tryckt svara eller stulit -->
                 <div id="action-buttons" class="hidden flex flex-col gap-4">
                     <button id="show-answer-btn" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl hover:bg-indigo-700 transition-all font-bold">Visa svar</button>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <button onclick="showTeamSelection()" class="bg-green-500 text-white px-6 py-4 rounded-2xl hover:bg-green-600 font-bold text-xl border-b-4 border-green-700">Rätt (+ poäng)</button>
                         
-                        <!-- DENNA KNAPP SYNS NU BARA HÄR -->
+                        <!-- Öppna för stöld om det var fel -->
                         <button id="fail-trigger-btn" class="bg-red-600 text-white px-6 py-4 rounded-2xl hover:bg-red-700 transition-all font-black border-b-4 border-red-800 text-xl">
-                            FEL! (SHOTRUNDA) 🥃
+                            FEL! (STJÄL VIA SHOT) 🥃
                         </button>
 
                         <button onclick="closeModal(null)" class="bg-gray-500 text-white px-6 py-4 rounded-2xl hover:bg-gray-600 font-bold text-xl border-b-4 border-gray-700">Ingen fick rätt</button>
                     </div>
                 </div>
 
-                <!-- Val av lag vid rätt svar -->
+                <!-- Val av lag -->
                 <div id="team-selector" class="hidden flex flex-col gap-4">
                     <p class="text-xl font-bold text-gray-600">Vem vann poängen?</p>
                     <div id="team-selection-grid" class="grid grid-cols-2 gap-3"></div>
@@ -398,11 +398,10 @@
             document.getElementById('timer-text').innerText = "SVEP!";
             
             document.getElementById('pre-shot-controls').classList.add('hidden');
-            document.getElementById('action-buttons').classList.add('hidden'); // Dölj vanliga knappar
+            document.getElementById('action-buttons').classList.add('hidden'); 
             document.getElementById('shot-taken-btn').classList.remove('hidden');
         }
 
-        // Koppla "FEL!"-knappen till att trigga shotrundan
         document.getElementById('fail-trigger-btn').onclick = triggerShotRule;
 
         function stopEverything() {
