@@ -112,7 +112,7 @@
             100% { transform: scale(1); background-color: #fbbf24; }
         }
 
-        /* Bild-styling uppdaterad för att inte beskära */
+        /* Bild-styling för att visa hela bilden i ett rutnät */
         .image-grid {
             display: grid;
             gap: 12px;
@@ -123,15 +123,15 @@
 
         .question-image {
             width: 100%;
-            height: 180px; /* Något lägre för att få plats med fler rader */
-            object-fit: contain; /* VIKTIGT: Visa hela bilden */
-            background-color: #f9fafb; /* Ljus bakgrund om bilden inte täcker allt */
+            height: 180px;
+            object-fit: contain; /* Visar hela bilden utan beskärning */
+            background-color: #f9fafb;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             border: 2px solid #e5e7eb;
         }
 
-        /* Rutnät för olika antal bilder */
+        /* Rutnät baserat på antal bilder */
         .grid-1 { grid-template-columns: minmax(200px, 450px); }
         .grid-2 { grid-template-columns: repeat(2, 1fr); }
         .grid-3 { grid-template-columns: repeat(3, 1fr); }
@@ -197,7 +197,7 @@
 
             <!-- Behållare för bilder -->
             <div id="image-container" class="hidden image-grid">
-                <!-- Bilder injiceras här av JS -->
+                <!-- Bilder injiceras här -->
             </div>
 
             <div id="question-text" class="text-2xl md:text-4xl mb-8 min-h-[50px] flex items-center justify-center font-bold leading-tight relative z-10">
@@ -234,6 +234,8 @@
     </div>
 
     <script>
+        const cakeQuestionText = "Vem är linas hear me out cake av dessa?";
+
         const gameData = {
             music: [
                 { v: 500, q: "Denna grupp toppade listorna året födelsedagsbarnet föddes.", a: "Spice Girls", imgs: ["https://upload.wikimedia.org/wikipedia/en/0/01/SpiceGirlsSpiceAlbumcover.png"] },
@@ -250,11 +252,11 @@
                 { v: 100, q: "Vad hette den blå bollen som fastnade på allt?", a: "Klibb-boll" }
             ],
             cake: [
-                { v: 500, q: "Vilka är dessa fyra oväntade 'Hear me out'-kandidater?", a: "Svaret på alla 4", imgs: ["500p_a.jpg", "500p_b.jpg", "500p_c.jpg", "500p_d.jpg"] },
-                { v: 400, q: "Vilka tre karaktärer döljer sig här?", a: "Svaret på alla 3", imgs: ["400p_a.jpg", "400p_b.jpg", "400p_c.jpg"] },
-                { v: 300, q: "Tre klassiska kändisar hon 'hört ut'. Vilka?", a: "Svaret på alla 3", imgs: ["300p_a.jpg", "300p_b.jpg", "300p_c.jpg"] },
-                { v: 200, q: "Dessa tre hjältar har hon en svag punkt för.", a: "Svaret på alla 3", imgs: ["200p_a.jpg", "200p_b.jpg", "200p_c.jpg"] },
-                { v: 100, q: "Vilka är dessa två?", a: "Svaret på alla 2", imgs: ["100p_a.jpg", "100p_b.jpg"] }
+                { v: 500, q: cakeQuestionText, a: "Svaret på alla 4", imgs: ["500p_a.jpg", "500p_b.jpg", "500p_c.jpg", "500p_d.jpg"] },
+                { v: 400, q: cakeQuestionText, a: "Svaret på alla 3", imgs: ["400p_a.jpg", "400p_b.jpg", "400p_c.jpg"] },
+                { v: 300, q: cakeQuestionText, a: "Svaret på alla 3", imgs: ["300p_a.jpg", "300p_b.jpg", "300p_c.jpg"] },
+                { v: 200, q: cakeQuestionText, a: "Svaret på alla 3", imgs: ["200p_a.jpg", "200p_b.jpg", "200p_c.jpg"] },
+                { v: 100, q: cakeQuestionText, a: "Svaret på alla 2", imgs: ["100p_a.jpg", "100p_b.jpg"] }
             ],
             random: [
                 { v: 500, q: "Hur många koppar kaffe krävs en måndag?", a: "Minst 3 koppar" },
