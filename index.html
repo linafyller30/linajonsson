@@ -77,17 +77,6 @@
             100% { background-color: #ffffff; color: #dc2626; }
         }
 
-        #setup-screen, #rules-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #E6E6FA;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
         #timer-bar {
             transition: width 1s linear, background-color 0.3s;
         }
@@ -145,7 +134,7 @@
 <body class="p-4 md:p-8 min-h-screen">
 
     <!-- Startskärm: Ange lagnamn och ladda ljudfil -->
-    <div id="setup-screen" class="p-6 overflow-y-auto">
+    <div id="setup-screen" class="fixed inset-0 bg-[#E6E6FA] z-[100] flex flex-col items-center justify-center p-6 overflow-y-auto">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-double border-indigo-100 my-8">
             <h2 class="text-4xl font-bold mb-4 italic">Vilka tävlar?</h2>
             <div class="space-y-3 mb-6">
@@ -161,7 +150,7 @@
                     🎵 SÄKRA ALLSÅNGEN (Musik 500p)
                 </p>
                 <p class="text-[11px] text-gray-500 mb-2 leading-relaxed">
-                    Webbläsare blockerar lokala ljudfiler av säkerhetsskäl. <strong>Välj din musik500.mp3 här</strong> så fungerar allsångstimer och ljud garanterat under festen!
+                    Webbläsare blockerar ibland lokala ljudfiler av säkerhetsskäl. <strong>Välj din musik500.mp3 här</strong> så fungerar allsångstimer och ljud garanterat under festen!
                 </p>
                 <input type="file" id="setup-audio-picker" accept="audio/*" class="text-xs text-gray-500 w-full file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
                 <p id="setup-audio-status" class="text-[11px] font-bold text-gray-400 mt-2 italic text-center">Ingen musikfil inladdad än</p>
@@ -171,8 +160,8 @@
         </div>
     </div>
 
-    <!-- Regelskärm (Ny) -->
-    <div id="rules-screen" class="p-6 overflow-y-auto hidden">
+    <!-- Regelskärm -->
+    <div id="rules-screen" class="fixed inset-0 bg-[#E6E6FA] z-[100] hidden flex-col items-center justify-center p-6 overflow-y-auto">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-2xl w-full border-4 border-double border-indigo-100 my-8">
             <!-- Envåldshärskare med guldbox -->
             <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 mb-6 text-center">
@@ -202,7 +191,7 @@
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="text-xl">⚖️</span>
-                    <p><strong>Poängjustering:</strong> spelledaren (John) kan snabbt ge straffpoäng (-100) eller belöningar (+100) med snabbknapparna, eller skriva in valfritt poängtal manuellt på varje lag.</p>
+                    <p><strong>Poängjustering:</strong> Spelledaren (John) kan snabbt ge straffpoäng (-100) eller belöningar (+100) med snabbknapparna, eller skriva in valfritt poängtal manuellt på varje lag.</p>
                 </div>
             </div>
 
@@ -210,22 +199,23 @@
         </div>
     </div>
 
-    <!-- Header med integrerad bild och snygg fallbacks-lösning för live preview -->
+    <!-- Header med stor integrerad bild och snygg fallback-lösning -->
     <div class="max-w-7xl mx-auto mb-8">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <!-- Sektion för logotyp/bild + titel bredvid varandra -->
             <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                <!-- Bilden lina.jpg - Stor och lyxig -->
+                <!-- Bilden lina.jpg - Mycket större (h-44 sm:h-52 md:h-60 / w-44 sm:w-52 md:w-60) och lyxig -->
                 <img src="lina.jpg" 
-                     onerror="this.onerror=null; this.src='https://placehold.co/200x200/6366f1/ffffff?text=Lina+30%C3%A5r';" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/250x250/6366f1/ffffff?text=Lina+30%C3%A5r';" 
                      alt="Lina" 
-                     class="h-36 md:h-44 w-36 md:w-44 object-cover rounded-3xl shadow-xl border-4 border-white bg-white transition-transform duration-300 hover:scale-105">
+                     class="h-44 sm:h-52 md:h-60 w-44 sm:w-52 md:w-60 object-cover rounded-3xl shadow-2xl border-4 border-white bg-white transition-transform duration-300 hover:scale-105">
                 <!-- Textsektionen bredvid bilden -->
                 <div>
-                    <h1 class="text-3xl md:text-4xl lg:text-4xl font-bold tracking-tight uppercase text-indigo-950 leading-tight">30-Års Jeopardy</h1>
-                    <p class="italic text-base md:text-lg text-indigo-800 mt-1 max-w-md leading-relaxed">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
+                    <h1 class="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight uppercase text-indigo-950 leading-none">30-Års Jeopardy</h1>
+                    <p class="italic text-lg md:text-xl text-indigo-800 mt-2 max-w-md leading-relaxed">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
                 </div>
             </div>
+            <!-- Här hamnar poängtavlan automatiskt bredvid eller under beroende på skärmstorlek -->
             <div id="team-display" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-auto"></div>
         </div>
     </div>
@@ -353,7 +343,7 @@
                 { v: 500, q: "Detta linnet hade Lina på sig extremt mycket. Vad står det på linnet? (3 ord).\n\na) Söt men busig\nb) Liten men kaxig\nc) Vild men snäll\nd) Liten men tuff", a: "d) Liten men tuff", imgs: ["linabarndom500p.jpg"] },
                 { v: 400, q: "Vilken vill Lina bli när hon var liten?\n\na) Snickare\nb) Rörmokare\nc) Författare\nd) Lärare", a: "a) Snickare", imgs: ["linabarndom400p.jpg"] },
                 { v: 300, q: "Vilken konsol var lina besatt av när hon var liten?\n\na) Game Boy\nb) Nintendo DS\nc) Playstation 2\nd) Wii", a: "a) Game Boy", imgs: ["linabarndom300p.jpg"] },
-                { v: 200, q: "Vem var linas första pojkvän?\n\na) Narcis\nb) Anton Klasson\nc) Adam Sanden\nd) Alem Sacirovic", a: "b) Anton Klasson", imgs: ["linabarndom200p.jpg"] },
+                { v: 200, q: "Vem var linas första pojkvän?\n\na) Narcis\nb) Anton Klasson\nb) Adam Sanden\nd) Alem Sacirovic", a: "b) Anton Klasson", imgs: ["linabarndom200p.jpg"] },
                 { v: 100, q: "Vilken position spelade Lina i IFK värnamo?\n\na) Mittfältare\nb) Back\nc) Anfall\nd) Målvakt", a: "d) Målvakt", imgs: ["linabarndom100p.jpg"] }
             ],
             cake: [
@@ -438,17 +428,20 @@
                 { name: document.getElementById('team3-input').value || 'Lag 3', score: 0 },
                 { name: document.getElementById('team4-input').value || 'Lag 4', score: 0 }
             ];
-            document.getElementById('setup-screen').classList.add('hidden');
-            document.getElementById('rules-screen').classList.remove('hidden');
+            
+            // Dölj startskärm, visa regelskärm
+            document.getElementById('setup-screen').classList.replace('flex', 'hidden');
+            document.getElementById('rules-screen').classList.replace('hidden', 'flex');
         }
 
         // Starta spelet från regelskärmen
         function startGame() {
             updateTeamDisplay();
-            document.getElementById('rules-screen').classList.add('hidden');
-            // För äldre dolda skärmar som kör inline style
-            document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('rules-screen').style.display = 'none';
+            
+            // Dölj start- och regelskärmar helt och säkert
+            document.getElementById('setup-screen').classList.replace('flex', 'hidden');
+            document.getElementById('rules-screen').classList.replace('flex', 'hidden');
+            
             initBoard();
         }
 
