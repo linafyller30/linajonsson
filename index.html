@@ -77,7 +77,7 @@
             100% { background-color: #ffffff; color: #dc2626; }
         }
 
-        #setup-screen {
+        #setup-screen, #rules-screen {
             position: fixed;
             inset: 0;
             background-color: #E6E6FA;
@@ -144,17 +144,69 @@
 </head>
 <body class="p-4 md:p-8 min-h-screen">
 
-    <!-- Startskärm: Ange lagnamn -->
-    <div id="setup-screen" class="p-6">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-double border-indigo-100">
-            <h2 class="text-4xl font-bold mb-6 italic">Vilka tävlar?</h2>
-            <div class="space-y-4 mb-8">
+    <!-- Startskärm: Ange lagnamn och ladda ljudfil -->
+    <div id="setup-screen" class="p-6 overflow-y-auto">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-double border-indigo-100 my-8">
+            <h2 class="text-4xl font-bold mb-4 italic">Vilka tävlar?</h2>
+            <div class="space-y-3 mb-6">
                 <input type="text" id="team1-input" placeholder="Lag 1" class="w-full p-3 border-2 border-indigo-100 rounded-xl outline-none focus:border-indigo-400" value="Lag Solsken">
                 <input type="text" id="team2-input" placeholder="Lag 2" class="w-full p-3 border-2 border-indigo-100 rounded-xl outline-none focus:border-indigo-400" value="Bubbelsällskapet">
                 <input type="text" id="team3-input" placeholder="Lag 3" class="w-full p-3 border-2 border-indigo-100 rounded-xl outline-none focus:border-indigo-400" value="Frågvisa Gänget">
                 <input type="text" id="team4-input" placeholder="Lag 4" class="w-full p-3 border-2 border-indigo-100 rounded-xl outline-none focus:border-indigo-400" value="30-plussarna">
             </div>
-            <button onclick="startGame()" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl font-bold hover:bg-indigo-700 w-full transition-transform hover:scale-105">Starta Spelet</button>
+
+            <!-- Sektion för förhandsladdning av ljud på startskärmen -->
+            <div class="mb-6 p-4 bg-indigo-50 rounded-2xl border border-indigo-100 text-left">
+                <p class="text-xs font-bold text-indigo-900 uppercase tracking-widest mb-1 flex items-center gap-1">
+                    🎵 SÄKRA ALLSÅNGEN (Musik 500p)
+                </p>
+                <p class="text-[11px] text-gray-500 mb-2 leading-relaxed">
+                    Webbläsare blockerar lokala ljudfiler av säkerhetsskäl. <strong>Välj din musik500.mp3 här</strong> så fungerar allsångstimer och ljud garanterat under festen!
+                </p>
+                <input type="file" id="setup-audio-picker" accept="audio/*" class="text-xs text-gray-500 w-full file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+                <p id="setup-audio-status" class="text-[11px] font-bold text-gray-400 mt-2 italic text-center">Ingen musikfil inladdad än</p>
+            </div>
+
+            <button onclick="goToRules()" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl font-bold hover:bg-indigo-700 w-full transition-transform hover:scale-105">Gå vidare till regler</button>
+        </div>
+    </div>
+
+    <!-- Regelskärm (Ny) -->
+    <div id="rules-screen" class="p-6 overflow-y-auto hidden">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-2xl w-full border-4 border-double border-indigo-100 my-8">
+            <!-- Envåldshärskare med guldbox -->
+            <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 mb-6 text-center">
+                <h3 class="text-2xl font-bold text-amber-950 uppercase tracking-wide mb-2">⚠️ VIKTIG INFO: HÄRSKAREN ⚠️</h3>
+                <p class="text-lg text-amber-900 font-bold leading-relaxed">
+                    John är enväldig härskare — det är hans rätt efter att ha skapat detta. 
+                </p>
+                <p class="text-sm text-red-700 mt-2 italic font-semibold">
+                    Tjafsar man emot för mycket så kan John dra av poäng för att han är petty like that.
+                </p>
+            </div>
+
+            <h2 class="text-3xl font-bold text-center italic mb-4 text-indigo-950">Spelregler & Tider</h2>
+            
+            <div class="space-y-4 text-gray-700 text-sm md:text-base leading-relaxed mb-6">
+                <div class="flex items-start gap-3">
+                    <span class="text-xl">⏱️</span>
+                    <p><strong>Svarstid:</strong> Varje vanlig fråga har en timer på <strong>30 sekunder</strong>.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-xl">🥃</span>
+                    <p><strong>Shotregeln (Stjäla):</strong> Om timern når 0s, eller om ett lag svarar fel, har de andra lagen chansen att stjäla frågan. Men det kräver uppoffring – <strong>man måste först svepa en shot för att få stjäla frågan!</strong></p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-xl">🎵</span>
+                    <p><strong>Musik 500p Special:</strong> När frågan startas spelas låten i <strong>10 sekunder</strong>. Därefter startar en grön <strong>20 sekunders sjung-timer</strong> direkt. Laget måste sjunga vidare på låten och hålla igång i minst 20 sekunder för att knipa de eftertraktade poängen!</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-xl">⚖️</span>
+                    <p><strong>Poängjustering:</strong> spelledaren (John) kan snabbt ge straffpoäng (-100) eller belöningar (+100) med snabbknapparna, eller skriva in valfritt poängtal manuellt på varje lag.</p>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl font-bold hover:bg-indigo-700 w-full transition-transform hover:scale-105 shadow-md">Starta Spelet!</button>
         </div>
     </div>
 
@@ -208,8 +260,8 @@
                 <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Svep först för att STJÄLA frågan!</p>
             </div>
 
-            <!-- Den eleganta ljudspelaren med säkerhets-filväljare -->
-            <div id="audio-player-container" class="hidden mb-6 p-4 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-3 max-w-sm mx-auto shadow-inner">
+            <!-- Den eleganta ljudspelaren med synlig nödfilväljare -->
+            <div id="audio-player-container" class="hidden mb-6 p-4 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-3 max-w-md mx-auto shadow-inner">
                 <p class="text-xs font-bold text-indigo-900 uppercase tracking-widest">Ljudklipp till frågan</p>
                 <div class="flex items-center gap-4 w-full justify-center">
                     <button id="audio-play-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95">
@@ -228,10 +280,10 @@
                     </div>
                 </div>
                 
-                <!-- Säker filväljare om webbläsaren blockerar automatisk sökning -->
+                <!-- Extra tydlig reserv-filväljare inuti modalen -->
                 <div class="w-full mt-2 border-t pt-2 border-indigo-100 text-center">
-                    <label class="block text-[10px] text-indigo-700 font-bold mb-1 uppercase">Säkerhets-lösning (Klicka om låten inte spelas):</label>
-                    <input type="file" id="local-audio-picker" accept="audio/*" class="text-xs text-gray-500 max-w-full file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer">
+                    <label class="block text-[10px] text-indigo-700 font-bold mb-1 uppercase">Säkerhets-lösning (Om ljudet inte spelas):</label>
+                    <input type="file" id="local-audio-picker" accept="audio/*" class="text-xs text-gray-500 max-w-full file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer mx-auto">
                 </div>
 
                 <!-- Det dolda HTML5 audioelementet -->
@@ -292,7 +344,7 @@
         const gameData = {
             music: [
                 { v: 500, q: "För att få 500 poäng så behöver man kunna fortsätta sjunga på denna låten efter 10 s. Man måste kunna sjunga i åtminstone 20s till. Allsång uppmuntras.\n\nGubben i lådan - Daniel Adams Ray.", a: "Gubben i lådan - Daniel Adams Ray", audio: "musik500.mp3", imgs: ["linamusik500p.jpg"] },
-                { v: 400, q: "Vilken av följande var Linas allra top låt på spotify nånsin?\n\na) Kommer ifrån - Snook\nb) How to save a life - The Fray\nc) Marvins room - Drake\nd) Winter - Joshua Radin", a: "d) Winter - Joshua Radin", imgs: ["linamusik400p.jpg"] },
+                { v: 400, q: "Vilken av following var Linas allra top låt på spotify nånsin?\n\na) Kommer ifrån - Snook\nb) How to save a life - The Fray\nc) Marvins room - Drake\nd) Winter - Joshua Radin", a: "d) Winter - Joshua Radin", imgs: ["linamusik400p.jpg"] },
                 { v: 300, q: "Vem av följande artister har Lina inte sett live?\n\na) Drake\nb) Frank Ocean\nc) Håkan Hellström\nd) Veronica Maggio", a: "a) Drake", imgs: ["linamusik300p.jpg"] },
                 { v: 200, q: "Hur många följer linas spellista?\n\na) 7643\nb) 153\nc) 10 283\nd) 5616", a: "d) 5616", imgs: ["linamusik200p.jpg"] },
                 { v: 100, q: "Vad heter Linas ökända spellista?\n\na) Pop it like its hot\nb) Drop it like its hot\nc) Fuck it like im hot\nd) Bad bitchez like me (Lina Jonsson) is hard to come by", a: "b) Drop it like its hot", imgs: ["linamusik100p.jpg"] }
@@ -327,6 +379,9 @@
         let timeLeft = 30;
         let currentCategory = '';
         let music500State = 'idle'; // 'idle', 'playing_intro', 'singing', 'finished'
+        
+        // Den globala variabeln för att spara en lokalt uppladdad ljudfil i webbläsarens minne
+        let localAudioBlobUrl = null;
 
         // Referenser till musikelementen
         const audioNode = document.getElementById('modal-audio');
@@ -335,17 +390,65 @@
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
         const audioStatus = document.getElementById('audio-status');
+        
+        const setupAudioPicker = document.getElementById('setup-audio-picker');
+        const setupAudioStatus = document.getElementById('setup-audio-status');
         const localAudioPicker = document.getElementById('local-audio-picker');
 
-        function startGame() {
+        // Sätt upp lyssnare för startskärmens filväljare
+        setupAudioPicker.onchange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                if (localAudioBlobUrl) {
+                    URL.revokeObjectURL(localAudioBlobUrl);
+                }
+                localAudioBlobUrl = URL.createObjectURL(file);
+                setupAudioStatus.innerText = "✓ " + file.name + " är redo!";
+                setupAudioStatus.className = "text-[12px] font-bold text-green-600 mt-2 text-center animate-pulse";
+                audioStatus.innerText = "Ljudfil laddad från startskärmen!";
+                audioStatus.className = "text-sm font-bold text-green-600 block";
+            }
+        };
+
+        // Sätt upp lyssnare för nöd-filväljaren inuti frågemodalen
+        localAudioPicker.onchange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                if (localAudioBlobUrl) {
+                    URL.revokeObjectURL(localAudioBlobUrl);
+                }
+                localAudioBlobUrl = URL.createObjectURL(file);
+                audioNode.src = localAudioBlobUrl;
+                audioStatus.innerText = "Låten är redo! Klicka på Play.";
+                audioStatus.className = "text-sm font-bold text-green-600 block animate-pulse";
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                if (currentCategory === 'music' && activeQuestionValue === 500) {
+                    music500State = 'playing_intro';
+                    document.getElementById('timer-text').innerText = "Klicka PLAY för att starta!";
+                }
+            }
+        };
+
+        // Gå från startskärmen till regelskärmen
+        function goToRules() {
             teams = [
                 { name: document.getElementById('team1-input').value || 'Lag 1', score: 0 },
                 { name: document.getElementById('team2-input').value || 'Lag 2', score: 0 },
                 { name: document.getElementById('team3-input').value || 'Lag 3', score: 0 },
                 { name: document.getElementById('team4-input').value || 'Lag 4', score: 0 }
             ];
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('rules-screen').classList.remove('hidden');
+        }
+
+        // Starta spelet från regelskärmen
+        function startGame() {
             updateTeamDisplay();
+            document.getElementById('rules-screen').classList.add('hidden');
+            // För äldre dolda skärmar som kör inline style
             document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('rules-screen').style.display = 'none';
             initBoard();
         }
 
@@ -429,17 +532,27 @@
                 imgContainer.classList.add('hidden');
             }
 
-            // Nollställ och hantera ljudspelaren
+            // Nollställ och ladda rätt ljudspår
             audioNode.pause();
             audioNode.src = '';
-            audioStatus.innerText = "Klicka för att spela";
-            audioStatus.className = "text-sm font-bold text-gray-500 block";
+            
+            if (localAudioBlobUrl) {
+                // Använd den uppladdade filen i första hand
+                audioNode.src = localAudioBlobUrl;
+                audioStatus.innerText = "Lokal ljudfil är redo!";
+                audioStatus.className = "text-sm font-bold text-green-600 block";
+            } else if (data.audio) {
+                // Fallback till den lokala server-sökvägen musik500.mp3
+                audioNode.src = data.audio;
+                audioStatus.innerText = "Klicka för att spela";
+                audioStatus.className = "text-sm font-bold text-gray-500 block";
+            }
+
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
-            localAudioPicker.value = ''; // Nollställ filväljaren
+            localAudioPicker.value = ''; // Återställ nöd-filväljaren
 
             if (data.audio) {
-                audioNode.src = data.audio;
                 audioContainer.classList.remove('hidden');
             } else {
                 audioContainer.classList.add('hidden');
@@ -458,7 +571,6 @@
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('shot-notice').classList.add('hidden');
             
-            // Återställ timertextens färg
             const timerText = document.getElementById('timer-text');
             timerText.className = "text-3xl font-bold text-gray-400";
             
@@ -477,23 +589,6 @@
             }
         }
 
-        // Den säkra filväljaren om webbläsaren blockerar lokal sökning (CORS)
-        localAudioPicker.onchange = (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const objectURL = URL.createObjectURL(file);
-                audioNode.src = objectURL;
-                audioStatus.innerText = "Låten är redo! Klicka på Play.";
-                audioStatus.className = "text-sm font-bold text-green-600 block animate-pulse";
-                playIcon.classList.remove('hidden');
-                pauseIcon.classList.add('hidden');
-                if (currentCategory === 'music' && activeQuestionValue === 500) {
-                    music500State = 'playing_intro';
-                    document.getElementById('timer-text').innerText = "Klicka PLAY för att starta!";
-                }
-            }
-        };
-
         audioPlayBtn.onclick = () => {
             if (audioNode.paused) {
                 audioNode.play().then(() => {
@@ -504,7 +599,7 @@
                 }).catch(e => {
                     audioStatus.innerText = "Kunde inte spela (Saknas?)";
                     audioStatus.className = "text-xs font-bold text-red-500 block";
-                    console.log("Kunde inte spela ljudfilen automatiskt. Använd filväljaren nedan för att ladda musik500.mp3.", e);
+                    console.log("Kunde inte starta ljudet automatiskt. Vänligen ladda upp ljudfilen på startskärmen.", e);
                 });
             } else {
                 audioNode.pause();
@@ -512,10 +607,6 @@
                 pauseIcon.classList.add('hidden');
                 audioStatus.innerText = "Pausad";
                 audioStatus.className = "text-sm font-bold text-gray-500 block";
-                
-                if (currentCategory === 'music' && activeQuestionValue === 500 && music500State === 'playing_intro') {
-                    audioStatus.innerText = "Pausad - klicka Play för att fortsätta";
-                }
             }
         };
 
@@ -647,7 +738,7 @@
         document.getElementById('show-answer-btn').onclick = () => {
             document.getElementById('answer-text').classList.remove('hidden');
             document.getElementById('show-answer-btn').classList.add('hidden');
-            // Stoppa musiken automatiskt när svaret visas!
+            // Stoppa musiken automatiskt när svaret visas
             audioNode.pause();
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
