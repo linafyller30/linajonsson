@@ -208,10 +208,10 @@
                 <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Svep först för att STJÄLA frågan!</p>
             </div>
 
-            <!-- Den eleganta ljudspelaren -->
-            <div id="audio-player-container" class="hidden mb-6 p-4 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-3 max-w-xs mx-auto shadow-inner">
+            <!-- Den eleganta ljudspelaren med säkerhets-filväljare -->
+            <div id="audio-player-container" class="hidden mb-6 p-4 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-3 max-w-sm mx-auto shadow-inner">
                 <p class="text-xs font-bold text-indigo-900 uppercase tracking-widest">Ljudklipp till frågan</p>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4 w-full justify-center">
                     <button id="audio-play-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95">
                         <!-- Play Ikon (SVG) -->
                         <svg id="play-icon" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
@@ -227,6 +227,13 @@
                         <span class="text-[10px] text-gray-400 block">Kräver lokalt sparat ljudklipp</span>
                     </div>
                 </div>
+                
+                <!-- Säker filväljare om webbläsaren blockerar automatisk sökning -->
+                <div class="w-full mt-2 border-t pt-2 border-indigo-100 text-center">
+                    <label class="block text-[10px] text-indigo-700 font-bold mb-1 uppercase">Säkerhets-lösning (Klicka om låten inte spelas):</label>
+                    <input type="file" id="local-audio-picker" accept="audio/*" class="text-xs text-gray-500 max-w-full file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer">
+                </div>
+
                 <!-- Det dolda HTML5 audioelementet -->
                 <audio id="modal-audio"></audio>
             </div>
@@ -291,7 +298,7 @@
                 { v: 100, q: "Vad heter Linas ökända spellista?\n\na) Pop it like its hot\nb) Drop it like its hot\nc) Fuck it like im hot\nd) Bad bitchez like me (Lina Jonsson) is hard to come by", a: "b) Drop it like its hot", imgs: ["linamusik100p.jpg"] }
             ],
             childhood: [
-                { v: 500, q: "Detta linnet hade Lina på sig extremt mycket. Vad står det på linnet? (3 ord).\n\nAntingen alternativ eller skriva rakt ut.", a: "Liten men tuff", imgs: ["linabarndom500p.jpg"] },
+                { v: 500, q: "Detta linnet hade Lina på sig extremt mycket. Vad står det på linnet? (3 ord).\n\na) Söt men busig\nb) Liten men kaxig\nc) Vild men snäll\nd) Liten men tuff", a: "d) Liten men tuff", imgs: ["linabarndom500p.jpg"] },
                 { v: 400, q: "Vilken vill Lina bli när hon var liten?\n\na) Snickare\nb) Rörmokare\nc) Författare\nd) Lärare", a: "a) Snickare", imgs: ["linabarndom400p.jpg"] },
                 { v: 300, q: "Vilken konsol var lina besatt av när hon var liten?\n\na) Game Boy\nb) Nintendo DS\nc) Playstation 2\nd) Wii", a: "a) Game Boy", imgs: ["linabarndom300p.jpg"] },
                 { v: 200, q: "Vem var linas första pojkvän?\n\na) Narcis\nb) Anton Klasson\nc) Adam Sanden\nd) Alem Sacirovic", a: "b) Anton Klasson", imgs: ["linabarndom200p.jpg"] },
@@ -328,6 +335,7 @@
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
         const audioStatus = document.getElementById('audio-status');
+        const localAudioPicker = document.getElementById('local-audio-picker');
 
         function startGame() {
             teams = [
@@ -428,6 +436,7 @@
             audioStatus.className = "text-sm font-bold text-gray-500 block";
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
+            localAudioPicker.value = ''; // Nollställ filväljaren
 
             if (data.audio) {
                 audioNode.src = data.audio;
@@ -468,6 +477,23 @@
             }
         }
 
+        // Den säkra filväljaren om webbläsaren blockerar lokal sökning (CORS)
+        localAudioPicker.onchange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const objectURL = URL.createObjectURL(file);
+                audioNode.src = objectURL;
+                audioStatus.innerText = "Låten är redo! Klicka på Play.";
+                audioStatus.className = "text-sm font-bold text-green-600 block animate-pulse";
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                if (currentCategory === 'music' && activeQuestionValue === 500) {
+                    music500State = 'playing_intro';
+                    document.getElementById('timer-text').innerText = "Klicka PLAY för att starta!";
+                }
+            }
+        };
+
         audioPlayBtn.onclick = () => {
             if (audioNode.paused) {
                 audioNode.play().then(() => {
@@ -478,7 +504,7 @@
                 }).catch(e => {
                     audioStatus.innerText = "Kunde inte spela (Saknas?)";
                     audioStatus.className = "text-xs font-bold text-red-500 block";
-                    console.log("Kunde inte spela ljudfilen. Se till att 'musik500.mp3' ligger i samma mapp.", e);
+                    console.log("Kunde inte spela ljudfilen automatiskt. Använd filväljaren nedan för att ladda musik500.mp3.", e);
                 });
             } else {
                 audioNode.pause();
@@ -487,7 +513,6 @@
                 audioStatus.innerText = "Pausad";
                 audioStatus.className = "text-sm font-bold text-gray-500 block";
                 
-                // Om man pausar manuellt under intro-fasen fryser vi räknaren
                 if (currentCategory === 'music' && activeQuestionValue === 500 && music500State === 'playing_intro') {
                     audioStatus.innerText = "Pausad - klicka Play för att fortsätta";
                 }
