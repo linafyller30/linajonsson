@@ -51,7 +51,7 @@
             z-index: 50;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 12px;
             transition: background-color 0.1s;
         }
 
@@ -106,18 +106,18 @@
             white-space: pre-wrap;
         }
 
-        /* Bild-styling för Hear me out cake */
+        /* Bild-styling för Hear me out cake och övriga bilder */
         .image-grid {
             display: grid;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 12px; /* Minskad marginal för att förhindra skroll */
             justify-content: center;
             width: 100%;
         }
 
         .question-image {
             width: 100%;
-            height: 180px;
+            height: 220px; /* Ökad höjd för att göra bilderna större */
             object-fit: contain;
             background-color: #f9fafb;
             border-radius: 12px;
@@ -204,7 +204,7 @@
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <!-- Sektion för logotyp/bild + titel bredvid varandra -->
             <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                <!-- Bilden lina.jpg - Mycket större (h-44 sm:h-52 md:h-60 / w-44 sm:w-52 md:w-60) och lyxig -->
+                <!-- Bilden lina.jpg - Mycket större och lyxig -->
                 <img src="lina.jpg" 
                      onerror="this.onerror=null; this.src='https://placehold.co/250x250/6366f1/ffffff?text=Lina+30%C3%A5r';" 
                      alt="Lina" 
@@ -229,51 +229,52 @@
         <div id="game-board-contents" class="contents"></div>
     </div>
 
-    <!-- Frågemodal -->
+    <!-- Frågemodal (Optimerad höjd och mindre text/större bild för att förhindra skroll) -->
     <div id="modal" class="modal-overlay">
-        <div id="modal-card" class="bg-white p-6 md:p-10 rounded-3xl max-w-4xl w-full text-center relative card-shadow border-8 border-double border-indigo-50 transition-all overflow-y-auto max-h-[90vh]">
+        <div id="modal-card" class="bg-white p-4 md:p-6 rounded-3xl max-w-4xl w-full text-center relative card-shadow border-8 border-double border-indigo-50 transition-all overflow-y-auto max-h-[96vh] flex flex-col justify-between">
             
-            <div id="timer-container" class="mb-6">
-                <div class="flex justify-center items-center mb-2">
-                    <span id="timer-text" class="text-3xl font-bold text-gray-400">30s</span>
+            <div id="timer-container" class="mb-3">
+                <div class="flex justify-center items-center mb-1">
+                    <span id="timer-text" class="text-2xl font-bold text-gray-400">30s</span>
                 </div>
-                <div class="w-full bg-gray-100 h-4 rounded-full overflow-hidden">
+                <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
                     <div id="timer-bar" class="bg-indigo-500 h-full w-full"></div>
                 </div>
             </div>
 
-            <div id="modal-category-tag" class="inline-block px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-2">Kategori</div>
-            <div id="modal-value" class="text-2xl mb-4 font-bold text-gray-400 italic">500p</div>
+            <div class="flex flex-wrap justify-center items-center gap-2 mb-2">
+                <div id="modal-category-tag" class="inline-block px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-widest">Kategori</div>
+                <div id="modal-value" class="text-lg font-bold text-gray-400 italic">500p</div>
+            </div>
             
-            <div id="shot-notice" class="hidden mb-6">
-                <p class="text-6xl md:text-8xl font-black shot-alert-anim text-red-600 leading-none">🔥🍶🔥 SHOT! 🔥🍶🔥</p>
-                <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Svep först för att STJÄLA frågan!</p>
+            <div id="shot-notice" class="hidden mb-3">
+                <p class="text-4xl md:text-5xl font-black shot-alert-anim text-red-600 leading-none">🔥🍶🔥 SHOT! 🔥🍶🔥</p>
+                <p class="text-lg font-bold text-red-800 mt-2 uppercase bg-yellow-300 inline-block px-4 py-1 shadow-lg transform -rotate-1 italic">Svep först för att STJÄLA frågan!</p>
             </div>
 
             <!-- Den eleganta ljudspelaren med synlig nödfilväljare -->
-            <div id="audio-player-container" class="hidden mb-6 p-4 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-3 max-w-md mx-auto shadow-inner">
-                <p class="text-xs font-bold text-indigo-900 uppercase tracking-widest">Ljudklipp till frågan</p>
-                <div class="flex items-center gap-4 w-full justify-center">
-                    <button id="audio-play-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95">
+            <div id="audio-player-container" class="hidden mb-3 p-3 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-2 max-w-md mx-auto shadow-inner">
+                <p class="text-[11px] font-bold text-indigo-900 uppercase tracking-widest">Ljudklipp till frågan</p>
+                <div class="flex items-center gap-3 w-full justify-center">
+                    <button id="audio-play-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95">
                         <!-- Play Ikon (SVG) -->
-                        <svg id="play-icon" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg id="play-icon" class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                         <!-- Pause Ikon (SVG) -->
-                        <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                        <svg id="pause-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                         </svg>
                     </button>
                     <div class="text-left">
-                        <span id="audio-status" class="text-sm font-bold text-gray-500 block">Klicka för att spela</span>
-                        <span class="text-[10px] text-gray-400 block">Kräver lokalt sparat ljudklipp</span>
+                        <span id="audio-status" class="text-xs font-bold text-gray-500 block">Klicka för att spela</span>
                     </div>
                 </div>
                 
                 <!-- Extra tydlig reserv-filväljare inuti modalen -->
-                <div class="w-full mt-2 border-t pt-2 border-indigo-100 text-center">
-                    <label class="block text-[10px] text-indigo-700 font-bold mb-1 uppercase">Säkerhets-lösning (Om ljudet inte spelas):</label>
-                    <input type="file" id="local-audio-picker" accept="audio/*" class="text-xs text-gray-500 max-w-full file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer mx-auto">
+                <div class="w-full mt-1 border-t pt-1 border-indigo-100 text-center">
+                    <label class="block text-[9px] text-indigo-700 font-bold mb-0.5 uppercase">Nödlösning (Ljud blockerat):</label>
+                    <input type="file" id="local-audio-picker" accept="audio/*" class="text-[10px] text-gray-500 max-w-full file:mr-1 file:py-0.5 file:px-1.5 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer mx-auto">
                 </div>
 
                 <!-- Det dolda HTML5 audioelementet -->
@@ -282,48 +283,48 @@
 
             <div id="image-container" class="hidden image-grid"></div>
 
-            <div id="question-text" class="text-2xl md:text-3xl mb-8 min-h-[50px] flex items-center justify-center font-bold leading-relaxed relative z-10">
+            <div id="question-text" class="text-lg md:text-xl lg:text-2xl mb-4 min-h-[40px] flex items-center justify-center font-bold leading-snug relative z-10 text-gray-800">
                 Laddar fråga...
             </div>
             
-            <div id="answer-text" class="hidden text-2xl md:text-3xl mb-12 text-indigo-600 font-bold border-t-2 border-dashed pt-8">
+            <div id="answer-text" class="hidden text-lg md:text-xl lg:text-2xl mb-4 text-indigo-600 font-bold border-t-2 border-dashed pt-4">
                 Laddar svar...
             </div>
 
-            <div id="modal-footer" class="flex flex-col gap-4 relative z-10 pb-4">
+            <div id="modal-footer" class="flex flex-col gap-2 relative z-10 pb-2">
                 <!-- Initiala kontroller -->
                 <div id="pre-shot-controls" class="flex justify-center">
-                    <button id="team-answered-btn" class="bg-yellow-400 text-black px-12 py-6 rounded-2xl text-3xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600">
+                    <button id="team-answered-btn" class="bg-yellow-400 text-black px-8 py-3 rounded-xl text-xl hover:bg-yellow-500 transition-all font-black border-b-4 border-yellow-600">
                         LAG SVARAR! 🛑
                     </button>
                 </div>
 
                 <!-- Knapp för att stoppa stöld-rundan -->
-                <button id="shot-taken-btn" class="hidden stop-shot-btn bg-yellow-400 text-black px-10 py-8 rounded-2xl text-4xl font-black border-b-8 border-orange-600 mb-2">
+                <button id="shot-taken-btn" class="hidden stop-shot-btn bg-yellow-400 text-black px-8 py-4 rounded-xl text-2xl font-black border-b-4 border-orange-600 mb-1">
                     DE TOG SHOTTEN! 🥃
                 </button>
 
                 <!-- Efter att någon tryckt svara eller stulit -->
-                <div id="action-buttons" class="hidden flex flex-col gap-4">
-                    <button id="show-answer-btn" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl hover:bg-indigo-700 transition-all font-bold">Visa svar</button>
+                <div id="action-buttons" class="hidden flex flex-col gap-2">
+                    <button id="show-answer-btn" class="bg-indigo-600 text-white px-8 py-2.5 rounded-full text-lg hover:bg-indigo-700 transition-all font-bold">Visa svar</button>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button onclick="showTeamSelection()" class="bg-green-500 text-white px-6 py-4 rounded-2xl hover:bg-green-600 font-bold text-xl border-b-4 border-green-700">Rätt (+ poäng)</button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <button onclick="showTeamSelection()" class="bg-green-500 text-white px-4 py-2.5 rounded-xl hover:bg-green-600 font-bold text-lg border-b-2 border-green-700">Rätt (+ poäng)</button>
                         
                         <!-- Öppna för stöld om det var fel -->
-                        <button id="fail-trigger-btn" class="bg-red-600 text-white px-6 py-4 rounded-2xl hover:bg-red-700 transition-all font-black border-b-4 border-red-800 text-xl">
-                            FEL! (STJÄL VIA SHOT) 🥃
+                        <button id="fail-trigger-btn" class="bg-red-600 text-white px-4 py-2.5 rounded-xl hover:bg-red-700 transition-all font-black border-b-2 border-red-800 text-lg">
+                            FEL! (STJÄL) 🥃
                         </button>
 
-                        <button onclick="closeModal(null)" class="bg-gray-500 text-white px-6 py-4 rounded-2xl hover:bg-gray-600 font-bold text-xl border-b-4 border-gray-700">Ingen fick rätt</button>
+                        <button onclick="closeModal(null)" class="bg-gray-500 text-white px-4 py-2.5 rounded-xl hover:bg-gray-600 font-bold text-lg border-b-2 border-gray-700">Ingen fick rätt</button>
                     </div>
                 </div>
 
                 <!-- Val av lag -->
-                <div id="team-selector" class="hidden flex flex-col gap-4">
-                    <p class="text-xl font-bold text-gray-600">Vem vann poängen?</p>
-                    <div id="team-selection-grid" class="grid grid-cols-2 gap-3"></div>
-                    <button onclick="backToActions()" class="text-sm text-gray-400 underline">Tillbaka</button>
+                <div id="team-selector" class="hidden flex flex-col gap-2">
+                    <p class="text-lg font-bold text-gray-600">Vem vann poängen?</p>
+                    <div id="team-selection-grid" class="grid grid-cols-2 gap-2"></div>
+                    <button onclick="backToActions()" class="text-xs text-gray-400 underline">Tillbaka</button>
                 </div>
             </div>
         </div>
@@ -341,9 +342,9 @@
             ],
             childhood: [
                 { v: 500, q: "Detta linnet hade Lina på sig extremt mycket. Vad står det på linnet? (3 ord).\n\na) Söt men busig\nb) Liten men kaxig\nc) Vild men snäll\nd) Liten men tuff", a: "d) Liten men tuff", imgs: ["linabarndom500p.jpg"] },
-                { v: 400, q: "Vilken vill Lina bli när hon var liten?\n\na) Snickare\nb) Rörmokare\nc) Författare\nd) Lärare", a: "a) Snickare", imgs: ["linabarndom400p.jpg"] },
+                { v: 400, q: "Vilken ville Lina bli när hon var liten?\n\na) Snickare\nb) Rörmokare\nc) Författare\nd) Lärare", a: "a) Snickare", imgs: ["linabarndom400p.jpg"] },
                 { v: 300, q: "Vilken konsol var lina besatt av när hon var liten?\n\na) Game Boy\nb) Nintendo DS\nc) Playstation 2\nd) Wii", a: "a) Game Boy", imgs: ["linabarndom300p.jpg"] },
-                { v: 200, q: "Vem var linas första pojkvän?\n\na) Narcis\nb) Anton Klasson\nb) Adam Sanden\nd) Alem Sacirovic", a: "b) Anton Klasson", imgs: ["linabarndom200p.jpg"] },
+                { v: 200, q: "Vem var linas första pojkvän?\n\na) Narcis\nb) Anton Klasson\nc) Adam Sanden\nd) Alem Sacirovic", a: "b) Anton Klasson", imgs: ["linabarndom200p.jpg"] },
                 { v: 100, q: "Vilken position spelade Lina i IFK värnamo?\n\na) Mittfältare\nb) Back\nc) Anfall\nd) Målvakt", a: "d) Målvakt", imgs: ["linabarndom100p.jpg"] }
             ],
             cake: [
@@ -504,7 +505,7 @@
             currentCategory = cat;
             
             document.getElementById('modal-category-tag').innerText = cat.replace('music','Musik').replace('childhood','Barndom').replace('cake','Hear me out cake').replace('random','1996');
-            document.getElementById('modal-category-tag').className = `inline-block px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-2 category-${cat === 'cake' ? 'cake' : (cat === 'random' ? 'random' : cat)}`;
+            document.getElementById('modal-category-tag').className = `inline-block px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-widest category-${cat === 'cake' ? 'cake' : (cat === 'random' ? 'random' : cat)}`;
             document.getElementById('modal-value').innerText = `${activeQuestionValue} poäng`;
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('answer-text').innerText = data.a;
@@ -533,12 +534,12 @@
                 // Använd den uppladdade filen i första hand
                 audioNode.src = localAudioBlobUrl;
                 audioStatus.innerText = "Lokal ljudfil är redo!";
-                audioStatus.className = "text-sm font-bold text-green-600 block";
+                audioStatus.className = "text-xs font-bold text-green-600 block";
             } else if (data.audio) {
                 // Fallback till den lokala server-sökvägen musik500.mp3
                 audioNode.src = data.audio;
                 audioStatus.innerText = "Klicka för att spela";
-                audioStatus.className = "text-sm font-bold text-gray-500 block";
+                audioStatus.className = "text-xs font-bold text-gray-500 block";
             }
 
             playIcon.classList.remove('hidden');
@@ -565,7 +566,7 @@
             document.getElementById('shot-notice').classList.add('hidden');
             
             const timerText = document.getElementById('timer-text');
-            timerText.className = "text-3xl font-bold text-gray-400";
+            timerText.className = "text-2xl font-bold text-gray-400";
             
             document.getElementById('modal').style.display = 'flex';
 
@@ -588,10 +589,10 @@
                     playIcon.classList.add('hidden');
                     pauseIcon.classList.remove('hidden');
                     audioStatus.innerText = "Spelar ljud...";
-                    audioStatus.className = "text-sm font-bold text-indigo-600 animate-pulse block";
+                    audioStatus.className = "text-xs font-bold text-indigo-600 animate-pulse block";
                 }).catch(e => {
                     audioStatus.innerText = "Kunde inte spela (Saknas?)";
-                    audioStatus.className = "text-xs font-bold text-red-500 block";
+                    audioStatus.className = "text-[10px] font-bold text-red-500 block";
                     console.log("Kunde inte starta ljudet automatiskt. Vänligen ladda upp ljudfilen på startskärmen.", e);
                 });
             } else {
@@ -599,7 +600,7 @@
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
                 audioStatus.innerText = "Pausad";
-                audioStatus.className = "text-sm font-bold text-gray-500 block";
+                audioStatus.className = "text-xs font-bold text-gray-500 block";
             }
         };
 
@@ -611,7 +612,7 @@
                     playIcon.classList.remove('hidden');
                     pauseIcon.classList.add('hidden');
                     audioStatus.innerText = "10s spelade! Sjung nu!";
-                    audioStatus.className = "text-sm font-bold text-green-600 block animate-bounce";
+                    audioStatus.className = "text-xs font-bold text-green-600 block animate-bounce";
                     
                     // Starta den 20 sekunder långa sjunga-timern
                     startSingingTimer();
@@ -630,7 +631,7 @@
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
             audioStatus.innerText = "Klicka för att spela igen";
-            audioStatus.className = "text-sm font-bold text-gray-500 block";
+            audioStatus.className = "text-xs font-bold text-gray-500 block";
         };
 
         function startTimer() {
@@ -669,7 +670,7 @@
             bar.className = 'bg-green-500 h-full w-full';
             
             text.innerText = "Sjung! 20s";
-            text.className = "text-3xl font-bold text-green-600 animate-pulse";
+            text.className = "text-2xl font-bold text-green-600 animate-pulse";
             
             timerInterval = setInterval(() => {
                 timeLeftSinging--;
@@ -679,7 +680,7 @@
                 
                 if (timeLeftSinging <= 5) {
                     bar.className = 'bg-yellow-500 h-full w-full';
-                    text.className = "text-3xl font-bold text-yellow-600 animate-pulse";
+                    text.className = "text-2xl font-bold text-yellow-600 animate-pulse";
                 }
                 
                 if (timeLeftSinging <= 0) {
@@ -687,7 +688,7 @@
                     music500State = 'finished';
                     
                     text.innerText = "TIDEN UTE! Sjöng de klart?";
-                    text.className = "text-3xl font-bold text-indigo-700 animate-bounce";
+                    text.className = "text-2xl font-bold text-indigo-700 animate-bounce";
                     
                     bar.style.width = '100%';
                     bar.className = 'bg-indigo-600 h-full w-full';
@@ -736,7 +737,7 @@
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
             audioStatus.innerText = "Ljud stoppat";
-            audioStatus.className = "text-sm font-bold text-gray-400 block";
+            audioStatus.className = "text-xs font-bold text-gray-400 block";
         };
 
         function showTeamSelection() {
@@ -746,7 +747,7 @@
             grid.innerHTML = '';
             teams.forEach((team, i) => {
                 const btn = document.createElement('button');
-                btn.className = 'bg-indigo-100 hover:bg-indigo-600 hover:text-white p-4 rounded-xl font-bold transition-all truncate border-2 border-indigo-200';
+                btn.className = 'bg-indigo-100 hover:bg-indigo-600 hover:text-white p-3 rounded-xl font-bold transition-all truncate border-2 border-indigo-200 text-sm';
                 btn.innerText = team.name;
                 btn.onclick = () => closeModal(i);
                 grid.appendChild(btn);
