@@ -112,6 +112,11 @@
             100% { transform: scale(1); background-color: #fbbf24; }
         }
 
+        /* Textbehandling för att bibehålla radbrytningar i flervalsalternativ */
+        #question-text, #answer-text {
+            white-space: pre-wrap;
+        }
+
         /* Bild-styling för Hear me out cake */
         .image-grid {
             display: grid;
@@ -158,14 +163,15 @@
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <!-- Sektion för logotyp/bild + titel bredvid varandra -->
             <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                <!-- Bilden lina.jpg med en inbyggd onerror-händelse för förhandsvisning -->
+                <!-- Bilden lina.jpg - Stor och lyxig -->
                 <img src="lina.jpg" 
-                     onerror="this.onerror=null; this.src='https://placehold.co/150x150/6366f1/ffffff?text=Lina+30%C3%A5r';" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/200x200/6366f1/ffffff?text=Lina+30%C3%A5r';" 
                      alt="Lina" 
-                     class="h-28 md:h-32 w-28 md:w-32 object-cover rounded-2xl shadow-lg border-4 border-white bg-white">
+                     class="h-36 md:h-44 w-36 md:w-44 object-cover rounded-3xl shadow-xl border-4 border-white bg-white transition-transform duration-300 hover:scale-105">
+                <!-- Textsektionen bredvid bilden -->
                 <div>
-                    <h1 class="text-5xl font-bold tracking-tight uppercase text-indigo-950">30-Års Jeopardy</h1>
-                    <p class="italic text-xl text-indigo-800">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
+                    <h1 class="text-3xl md:text-4xl lg:text-4xl font-bold tracking-tight uppercase text-indigo-950 leading-tight">30-Års Jeopardy</h1>
+                    <p class="italic text-base md:text-lg text-indigo-800 mt-1 max-w-md leading-relaxed">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
                 </div>
             </div>
             <div id="team-display" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-auto"></div>
@@ -177,7 +183,7 @@
         <div class="category-music p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Musik</div>
         <div class="category-childhood p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Barndom</div>
         <div class="category-cake p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Hear me out cake</div>
-        <div class="category-random p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase text-shadow">Random</div>
+        <div class="category-random p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase text-shadow">1996</div>
         <div id="game-board-contents" class="contents"></div>
     </div>
 
@@ -202,13 +208,36 @@
                 <p class="text-2xl font-bold text-red-800 mt-6 uppercase bg-yellow-300 inline-block px-6 py-2 shadow-xl transform -rotate-2 italic">Svep först för att STJÄLA frågan!</p>
             </div>
 
+            <!-- Den eleganta ljudspelaren -->
+            <div id="audio-player-container" class="hidden mb-6 p-4 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl flex flex-col items-center gap-3 max-w-xs mx-auto shadow-inner">
+                <p class="text-xs font-bold text-indigo-900 uppercase tracking-widest">Ljudklipp till frågan</p>
+                <div class="flex items-center gap-4">
+                    <button id="audio-play-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95">
+                        <!-- Play Ikon (SVG) -->
+                        <svg id="play-icon" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <!-- Pause Ikon (SVG) -->
+                        <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                        </svg>
+                    </button>
+                    <div class="text-left">
+                        <span id="audio-status" class="text-sm font-bold text-gray-500 block">Klicka för att spela</span>
+                        <span class="text-[10px] text-gray-400 block">Kräver lokalt sparat ljudklipp</span>
+                    </div>
+                </div>
+                <!-- Det dolda HTML5 audioelementet -->
+                <audio id="modal-audio"></audio>
+            </div>
+
             <div id="image-container" class="hidden image-grid"></div>
 
-            <div id="question-text" class="text-2xl md:text-4xl mb-8 min-h-[50px] flex items-center justify-center font-bold leading-tight relative z-10">
+            <div id="question-text" class="text-2xl md:text-3xl mb-8 min-h-[50px] flex items-center justify-center font-bold leading-relaxed relative z-10">
                 Laddar fråga...
             </div>
             
-            <div id="answer-text" class="hidden text-2xl md:text-4xl mb-12 text-indigo-600 font-bold border-t-2 border-dashed pt-8">
+            <div id="answer-text" class="hidden text-2xl md:text-3xl mb-12 text-indigo-600 font-bold border-t-2 border-dashed pt-8">
                 Laddar svar...
             </div>
 
@@ -255,18 +284,18 @@
         const cakeQuestionText = "Vem är linas hear me out cake av dessa?";
         const gameData = {
             music: [
-                { v: 500, q: "Denna grupp toppade listorna året födelsedagsbarnet föddes.", a: "Spice Girls", imgs: ["https://upload.wikimedia.org/wikipedia/en/0/01/SpiceGirlsSpiceAlbumcover.png"] },
-                { v: 400, q: "Denna Britney Spears-låt släpptes 1998.", a: "...Baby One More Time" },
-                { v: 300, q: "Vilket boyband hade de mest dedikerade fansen?", a: "Backstreet Boys" },
-                { v: 200, q: "Detta bärbara sätt att lyssna på musik ersatte kassetten.", a: "Discman" },
-                { v: 100, q: "Vilken färg hade de populära 'HitClips'-spelarna?", a: "Olika neonfärger" }
+                { v: 500, q: "För att få 500 poäng så behöver man kunna fortsätta sjunga på denna låten efter 10 s. Man måste kunna sjunga i åtminstone 20s till. Allsång uppmuntras.\n\nGubben i lådan - Daniel Adams Ray.", a: "Gubben i lådan - Daniel Adams Ray", audio: "musik500.mp3", imgs: ["linamusik500p.jpg"] },
+                { v: 400, q: "Vilken av följande var Linas allra top låt på spotify nånsin?\n\na) Kommer ifrån - Snook\nb) How to save a life - The Fray\nc) Marvins room - Drake\nd) Winter - Joshua Radin", a: "d) Winter - Joshua Radin", imgs: ["linamusik400p.jpg"] },
+                { v: 300, q: "Vem av följande artister har Lina inte sett live?\n\na) Drake\nb) Frank Ocean\nc) Håkan Hellström\nd) Veronica Maggio", a: "a) Drake", imgs: ["linamusik300p.jpg"] },
+                { v: 200, q: "Hur många följer linas spellista?\n\na) 7643\nb) 153\nc) 10 283\nd) 5616", a: "d) 5616", imgs: ["linamusik200p.jpg"] },
+                { v: 100, q: "Vad heter Linas ökända spellista?\n\na) Pop it like its hot\nb) Drop it like its hot\nc) Fuck it like im hot\nd) Bad bitchez like me (Lina Jonsson) is hard to come by", a: "b) Drop it like its hot", imgs: ["linamusik100p.jpg"] }
             ],
             childhood: [
-                { v: 500, q: "I detta program bodde en björn i ett hus fullt av roliga saker.", a: "Björnes Magasin", imgs: ["https://image.spreadshirtmedia.net/image-server/v1/products/T210A2PA4301PT17X46Y38D1016834185W2498H2998/views/1,width=378,height=378,appearanceId=2,backgroundColor=F2F2F2/bjoerne-och-snigel-maen-premium-t-shirt.jpg"] },
-                { v: 400, q: "Vilken smak hade de klassiska 'Sura Patronerna'?", a: "Citron" },
-                { v: 300, q: "Dessa små plastfigurer med färgglatt hår satt på pennorna.", a: "Lyckotroll" },
-                { v: 200, q: "Vilket digitalt husdjur krävde mat dygnet runt?", a: "Tamagotchi" },
-                { v: 100, q: "Vad hette den blå bollen som fastnade på allt?", a: "Klibb-boll" }
+                { v: 500, q: "Detta linnet hade Lina på sig extremt mycket. Vad står det på linnet? (3 ord).\n\nAntingen alternativ eller skriva rakt ut.", a: "Liten men tuff", imgs: ["linabarndom500p.jpg"] },
+                { v: 400, q: "Vilken vill Lina bli när hon var liten?\n\na) Snickare\nb) Rörmokare\nc) Författare\nd) Lärare", a: "a) Snickare", imgs: ["linabarndom400p.jpg"] },
+                { v: 300, q: "Vilken konsol var lina besatt av när hon var liten?\n\na) Game Boy\nb) Nintendo DS\nc) Playstation 2\nd) Wii", a: "a) Game Boy", imgs: ["linabarndom300p.jpg"] },
+                { v: 200, q: "Vem var linas första pojkvän?\n\na) Narcis\nb) Anton Klasson\nc) Adam Sanden\nd) Alem Sacirovic", a: "b) Anton Klasson", imgs: ["linabarndom200p.jpg"] },
+                { v: 100, q: "Vilken position spelade Lina i IFK värnamo?\n\na) Mittfältare\nb) Back\nc) Anfall\nd) Målvakt", a: "d) Målvakt", imgs: ["linabarndom100p.jpg"] }
             ],
             cake: [
                 { v: 500, q: cakeQuestionText, a: "Svaret på alla 4", imgs: ["500p_a.jpg", "500p_b.jpg", "500p_c.jpg", "500p_d.jpg"] },
@@ -276,11 +305,11 @@
                 { v: 100, q: cakeQuestionText, a: "Svaret på alla 2", imgs: ["100p_a.jpg", "100p_b.jpg"] }
             ],
             random: [
-                { v: 500, q: "Hur många koppar kaffe krävs en måndag?", a: "Minst 3 koppar" },
-                { v: 400, q: "Vilken är hennes största rädsla?", a: "Spindlar" },
-                { v: 300, q: "Om hon vann 1 miljon, vad bokar hon?", a: "Resa till Maldiverna" },
-                { v: 200, q: "Vad är hennes mest använda emoji?", a: "😂" },
-                { v: 100, q: "Vilket plagg i garderoben borde slängts 2014?", a: "Mjukisbyxorna" }
+                { v: 500, q: "Denna schackdator från IBM skrev historia i februari 1996 genom att för första gången besegra den regerande världsmästaren Garri Kasparov i ett enskilt parti.", a: "Vad var Deep Blue? (Deep Blue)" },
+                { v: 400, q: "Forskare i Skottland skapade global etisk debatt detta år när de lyckades klona detta numera världsberömda däggdjur från vuxen cell.", a: "Vad var fåret Dolly? (Fåret Dolly)" },
+                { v: 300, q: "Han efterträdde Ingvar Carlsson i mars 1996 och påbörjade en tio år lång period som Sveriges statsminister.", a: "Vem är Göran Persson? (Göran Persson)" },
+                { v: 200, q: "Denna brittiska popgrupp tog över världen 1996 med sin debutsingel \"Wannabe\" och startade en våg av \"Girl Power\".", a: "Vilka var Spice Girls? (Spice Girls)" },
+                { v: 100, q: "Denna islamistiska rörelse intog Afghanistans huvudstad Kabul i september 1996 och utropade ett strikt emirat.", a: "Vilka var Talibanerna? (Talibanerna)" }
             ]
         };
 
@@ -289,6 +318,16 @@
         let activeCardElement = null;
         let timerInterval = null;
         let timeLeft = 30;
+        let currentCategory = '';
+        let music500State = 'idle'; // 'idle', 'playing_intro', 'singing', 'finished'
+
+        // Referenser till musikelementen
+        const audioNode = document.getElementById('modal-audio');
+        const audioContainer = document.getElementById('audio-player-container');
+        const audioPlayBtn = document.getElementById('audio-play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const audioStatus = document.getElementById('audio-status');
 
         function startGame() {
             teams = [
@@ -345,7 +384,7 @@
                 ['music', 'childhood', 'cake', 'random'].forEach(cat => {
                     const q = gameData[cat][i];
                     const card = document.createElement('div');
-                    card.className = `category-${cat === 'cake' ? 'cake' : cat} p-6 md:p-10 text-center text-3xl md:text-4xl font-bold card-shadow rounded-lg border-2 border-transparent`;
+                    card.className = `category-${cat === 'cake' ? 'cake' : (cat === 'random' ? 'random' : cat)} p-6 md:p-10 text-center text-3xl md:text-4xl font-bold card-shadow rounded-lg border-2 border-transparent`;
                     card.innerText = q.v;
                     card.onclick = () => openQuestion(cat, i, card);
                     board.appendChild(card);
@@ -358,9 +397,10 @@
             activeCardElement = el;
             const data = gameData[cat][index];
             activeQuestionValue = data.v;
+            currentCategory = cat;
             
-            document.getElementById('modal-category-tag').innerText = cat.replace('music','Musik').replace('childhood','Barndom').replace('cake','Hear me out cake').replace('random','Random');
-            document.getElementById('modal-category-tag').className = `inline-block px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-2 category-${cat === 'cake' ? 'cake' : cat}`;
+            document.getElementById('modal-category-tag').innerText = cat.replace('music','Musik').replace('childhood','Barndom').replace('cake','Hear me out cake').replace('random','1996');
+            document.getElementById('modal-category-tag').className = `inline-block px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-2 category-${cat === 'cake' ? 'cake' : (cat === 'random' ? 'random' : cat)}`;
             document.getElementById('modal-value').innerText = `${activeQuestionValue} poäng`;
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('answer-text').innerText = data.a;
@@ -381,6 +421,21 @@
                 imgContainer.classList.add('hidden');
             }
 
+            // Nollställ och hantera ljudspelaren
+            audioNode.pause();
+            audioNode.src = '';
+            audioStatus.innerText = "Klicka för att spela";
+            audioStatus.className = "text-sm font-bold text-gray-500 block";
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+
+            if (data.audio) {
+                audioNode.src = data.audio;
+                audioContainer.classList.remove('hidden');
+            } else {
+                audioContainer.classList.add('hidden');
+            }
+
             // Återställ UI
             document.getElementById('answer-text').classList.add('hidden');
             document.getElementById('action-buttons').classList.add('hidden');
@@ -393,11 +448,81 @@
             document.getElementById('modal-card').classList.remove('modal-pulse', 'card-flash-active');
             document.getElementById('modal').classList.remove('stress-flash-active');
             document.getElementById('shot-notice').classList.add('hidden');
-            document.getElementById('timer-text').classList.remove('text-red-600');
+            
+            // Återställ timertextens färg
+            const timerText = document.getElementById('timer-text');
+            timerText.className = "text-3xl font-bold text-gray-400";
             
             document.getElementById('modal').style.display = 'flex';
-            startTimer();
+
+            // Speciallösning för Musik 500p (Låt spela i 10s först)
+            if (cat === 'music' && data.v === 500) {
+                music500State = 'playing_intro';
+                audioNode.currentTime = 0;
+                clearInterval(timerInterval);
+                document.getElementById('timer-text').innerText = "Klicka PLAY för att starta!";
+                document.getElementById('timer-bar').style.width = '100%';
+                document.getElementById('timer-bar').className = 'bg-indigo-500 h-full w-full';
+            } else {
+                startTimer();
+            }
         }
+
+        audioPlayBtn.onclick = () => {
+            if (audioNode.paused) {
+                audioNode.play().then(() => {
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                    audioStatus.innerText = "Spelar ljud...";
+                    audioStatus.className = "text-sm font-bold text-indigo-600 animate-pulse block";
+                }).catch(e => {
+                    audioStatus.innerText = "Kunde inte spela (Saknas?)";
+                    audioStatus.className = "text-xs font-bold text-red-500 block";
+                    console.log("Kunde inte spela ljudfilen. Se till att 'musik500.mp3' ligger i samma mapp.", e);
+                });
+            } else {
+                audioNode.pause();
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                audioStatus.innerText = "Pausad";
+                audioStatus.className = "text-sm font-bold text-gray-500 block";
+                
+                // Om man pausar manuellt under intro-fasen fryser vi räknaren
+                if (currentCategory === 'music' && activeQuestionValue === 500 && music500State === 'playing_intro') {
+                    audioStatus.innerText = "Pausad - klicka Play för att fortsätta";
+                }
+            }
+        };
+
+        // Kontrollera ljudets sekunder i realtid för Musik 500p
+        audioNode.ontimeupdate = () => {
+            if (currentCategory === 'music' && activeQuestionValue === 500) {
+                if (audioNode.currentTime >= 10 && music500State === 'playing_intro') {
+                    audioNode.pause();
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
+                    audioStatus.innerText = "10s spelade! Sjung nu!";
+                    audioStatus.className = "text-sm font-bold text-green-600 block animate-bounce";
+                    
+                    // Starta den 20 sekunder långa sjunga-timern
+                    startSingingTimer();
+                } else if (music500State === 'playing_intro' && !audioNode.paused) {
+                    const remainingIntro = Math.max(0, 10 - audioNode.currentTime);
+                    document.getElementById('timer-text').innerText = `Spelar musik: ${remainingIntro.toFixed(1)}s`;
+                    const percentage = (remainingIntro / 10) * 100;
+                    const bar = document.getElementById('timer-bar');
+                    bar.style.width = percentage + "%";
+                    bar.className = 'bg-indigo-500 h-full w-full';
+                }
+            }
+        };
+
+        audioNode.onended = () => {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            audioStatus.innerText = "Klicka för att spela igen";
+            audioStatus.className = "text-sm font-bold text-gray-500 block";
+        };
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -419,6 +544,48 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     triggerShotRule();
+                }
+            }, 1000);
+        }
+
+        function startSingingTimer() {
+            music500State = 'singing';
+            clearInterval(timerInterval);
+            let timeLeftSinging = 20;
+            
+            const bar = document.getElementById('timer-bar');
+            const text = document.getElementById('timer-text');
+            
+            bar.style.width = '100%';
+            bar.className = 'bg-green-500 h-full w-full';
+            
+            text.innerText = "Sjung! 20s";
+            text.className = "text-3xl font-bold text-green-600 animate-pulse";
+            
+            timerInterval = setInterval(() => {
+                timeLeftSinging--;
+                text.innerText = "Sjung! " + timeLeftSinging + "s";
+                const percentage = (timeLeftSinging / 20) * 100;
+                bar.style.width = percentage + "%";
+                
+                if (timeLeftSinging <= 5) {
+                    bar.className = 'bg-yellow-500 h-full w-full';
+                    text.className = "text-3xl font-bold text-yellow-600 animate-pulse";
+                }
+                
+                if (timeLeftSinging <= 0) {
+                    clearInterval(timerInterval);
+                    music500State = 'finished';
+                    
+                    text.innerText = "TIDEN UTE! Sjöng de klart?";
+                    text.className = "text-3xl font-bold text-indigo-700 animate-bounce";
+                    
+                    bar.style.width = '100%';
+                    bar.className = 'bg-indigo-600 h-full w-full';
+                    
+                    // Öppna kontrollerna för att ge poäng direkt
+                    document.getElementById('pre-shot-controls').classList.add('hidden');
+                    document.getElementById('action-buttons').classList.remove('hidden');
                 }
             }, 1000);
         }
@@ -455,6 +622,12 @@
         document.getElementById('show-answer-btn').onclick = () => {
             document.getElementById('answer-text').classList.remove('hidden');
             document.getElementById('show-answer-btn').classList.add('hidden');
+            // Stoppa musiken automatiskt när svaret visas!
+            audioNode.pause();
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            audioStatus.innerText = "Ljud stoppat";
+            audioStatus.className = "text-sm font-bold text-gray-400 block";
         };
 
         function showTeamSelection() {
@@ -478,6 +651,11 @@
 
         function closeModal(winner) {
             clearInterval(timerInterval);
+            
+            // Pausa och nollställ ljudet vid stängning
+            audioNode.pause();
+            audioNode.src = '';
+
             document.getElementById('modal').classList.remove('stress-flash-active');
             if (winner !== null) {
                 teams[winner].score += activeQuestionValue;
