@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>30-årsfest Jeopardy</title>
+    <!-- Importera Garamond-typsnitt -->
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -138,6 +139,7 @@
 </head>
 <body class="p-4 md:p-8 min-h-screen">
 
+    <!-- Startskärm: Ange lagnamn -->
     <div id="setup-screen" class="p-6">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-double border-indigo-100">
             <h2 class="text-4xl font-bold mb-6 italic">Vilka tävlar?</h2>
@@ -151,16 +153,26 @@
         </div>
     </div>
 
+    <!-- Header med integrerad bild och snygg fallbacks-lösning för live preview -->
     <div class="max-w-7xl mx-auto mb-8">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div class="text-center lg:text-left">
-                <h1 class="text-5xl font-bold tracking-tight uppercase">30-Års Jeopardy</h1>
-                <p class="italic text-xl text-indigo-800">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
+            <!-- Sektion för logotyp/bild + titel bredvid varandra -->
+            <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                <!-- Bilden lina.jpg med en inbyggd onerror-händelse för förhandsvisning -->
+                <img src="lina.jpg" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/150x150/6366f1/ffffff?text=Lina+30%C3%A5r';" 
+                     alt="Lina" 
+                     class="h-28 md:h-32 w-28 md:w-32 object-cover rounded-2xl shadow-lg border-4 border-white bg-white">
+                <div>
+                    <h1 class="text-5xl font-bold tracking-tight uppercase text-indigo-950">30-Års Jeopardy</h1>
+                    <p class="italic text-xl text-indigo-800">Ta en shot för att stjäla frågan vid 0s eller vid FEL svar!</p>
+                </div>
             </div>
             <div id="team-display" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-auto"></div>
         </div>
     </div>
 
+    <!-- Spelplan -->
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-3 md:gap-4">
         <div class="category-music p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Musik</div>
         <div class="category-childhood p-5 rounded-t-xl text-center font-bold text-lg md:text-2xl shadow-md uppercase">Barndom</div>
@@ -169,6 +181,7 @@
         <div id="game-board-contents" class="contents"></div>
     </div>
 
+    <!-- Frågemodal -->
     <div id="modal" class="modal-overlay">
         <div id="modal-card" class="bg-white p-6 md:p-10 rounded-3xl max-w-4xl w-full text-center relative card-shadow border-8 border-double border-indigo-50 transition-all overflow-y-auto max-h-[90vh]">
             
@@ -200,22 +213,26 @@
             </div>
 
             <div id="modal-footer" class="flex flex-col gap-4 relative z-10 pb-4">
+                <!-- Initiala kontroller -->
                 <div id="pre-shot-controls" class="flex justify-center">
                     <button id="team-answered-btn" class="bg-yellow-400 text-black px-12 py-6 rounded-2xl text-3xl hover:bg-yellow-500 transition-all font-black border-b-8 border-yellow-600">
                         LAG SVARAR! 🛑
                     </button>
                 </div>
 
+                <!-- Knapp för att stoppa stöld-rundan -->
                 <button id="shot-taken-btn" class="hidden stop-shot-btn bg-yellow-400 text-black px-10 py-8 rounded-2xl text-4xl font-black border-b-8 border-orange-600 mb-2">
                     DE TOG SHOTTEN! 🥃
                 </button>
 
+                <!-- Efter att någon tryckt svara eller stulit -->
                 <div id="action-buttons" class="hidden flex flex-col gap-4">
                     <button id="show-answer-btn" class="bg-indigo-600 text-white px-10 py-4 rounded-full text-2xl hover:bg-indigo-700 transition-all font-bold">Visa svar</button>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <button onclick="showTeamSelection()" class="bg-green-500 text-white px-6 py-4 rounded-2xl hover:bg-green-600 font-bold text-xl border-b-4 border-green-700">Rätt (+ poäng)</button>
                         
+                        <!-- Öppna för stöld om det var fel -->
                         <button id="fail-trigger-btn" class="bg-red-600 text-white px-6 py-4 rounded-2xl hover:bg-red-700 transition-all font-black border-b-4 border-red-800 text-xl">
                             FEL! (STJÄL VIA SHOT) 🥃
                         </button>
@@ -224,6 +241,7 @@
                     </div>
                 </div>
 
+                <!-- Val av lag -->
                 <div id="team-selector" class="hidden flex flex-col gap-4">
                     <p class="text-xl font-bold text-gray-600">Vem vann poängen?</p>
                     <div id="team-selection-grid" class="grid grid-cols-2 gap-3"></div>
